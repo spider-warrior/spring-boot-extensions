@@ -20,7 +20,7 @@ public class WebExtensionConfiguration {
 
     @Bean
     public Validator validator(){
-        ValidatorFactory validatorFactory = Validation.byProvider( HibernateValidator.class )
+        ValidatorFactory validatorFactory = Validation.byProvider(HibernateValidator.class)
             .configure()
             .failFast(webExtensionProperties.getFailFast())
             .buildValidatorFactory();
