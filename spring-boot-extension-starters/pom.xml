@@ -12,7 +12,7 @@
     <artifactId>spring-boot-extension-starters</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>spring-boot-extension-starters-web</module>
+        <module>web-extension-spring-boot-starter</module>
     </modules>
 
     <properties>
