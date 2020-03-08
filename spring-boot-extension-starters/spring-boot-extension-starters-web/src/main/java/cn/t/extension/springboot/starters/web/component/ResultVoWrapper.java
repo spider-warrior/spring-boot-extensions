@@ -37,12 +37,21 @@ public class ResultVoWrapper {
     /**
      * 400
      */
-    public ResultVo buildBadParam(String msg) {
-        return buildFail(BAD_PARAM, msg);
-    }
 
     public ResultVo buildBadParam() {
-        return buildFail(BAD_PARAM, "参数异常");
+        return buildBadParam(null);
+    }
+
+    public ResultVo buildBadParam(String msg) {
+        return buildBadParam(msg, null);
+    }
+
+    public ResultVo buildBadParam(Object data) {
+        return buildBadParam(null, data);
+    }
+
+    public ResultVo buildBadParam(String msg, Object data) {
+        return buildFail(BAD_PARAM, (msg == null ? "参数异常" : msg), data);
     }
 
     /**

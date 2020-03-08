@@ -3,21 +3,23 @@ package cn.t.extension.springboot.starters.web.component;
 import cn.t.base.common.service.ErrorInfo;
 import cn.t.base.common.service.ServiceException;
 import cn.t.extension.springboot.starters.web.vo.ResultVo;
-import org.hibernate.validator.engine.HibernateConstraintViolation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.util.CollectionUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @ControllerAdvice
 @ResponseBody
@@ -33,20 +35,19 @@ public class GlobalExceptionHandler {
         return resultVoWrapper.buildFail();
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResultVo noHandlerFound(ConstraintViolationException e) {
-        logger.error("cat a ConstraintViolationException", e);
-        Set<ConstraintViolation<?>> errors = e.getConstraintViolations();
-        if(!CollectionUtils.isEmpty(errors)) {
-            Object defaultError = errors.toArray()[0];
-            if(defaultError instanceof HibernateConstraintViolation) {
-                HibernateConstraintViolation<?> validation = (HibernateConstraintViolation<?>)defaultError;
-                return resultVoWrapper.buildBadParam(validation.getMessage());
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResultVo noHandlerFound(MethodArgumentNotValidException e) {
+        logger.error("cat a MethodArgumentNotValidException", e);
+        BindingResult bindingResult = e.getBindingResult();
+        List<ObjectError> objectErrorList =  bindingResult.getAllErrors();
+        Map<String, Object> data = new HashMap<>();
+        objectErrorList.forEach(error -> {
+            if(error instanceof FieldError) {
+                data.put(((FieldError)error).getField(), error.getDefaultMessage());
             }
-        }
-        return resultVoWrapper.buildFail();
+        });
+        return resultVoWrapper.buildBadParam(data);
     }
-
 
     /**
      * 404
