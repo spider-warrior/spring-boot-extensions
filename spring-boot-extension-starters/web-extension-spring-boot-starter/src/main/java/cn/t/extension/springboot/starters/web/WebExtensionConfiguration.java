@@ -2,6 +2,8 @@ package cn.t.extension.springboot.starters.web;
 
 import cn.t.extension.springboot.starters.web.component.WebExtensionProperties;
 import org.hibernate.validator.HibernateValidator;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,6 +13,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
+@AutoConfigureBefore(ValidationAutoConfiguration.class)
 @EnableConfigurationProperties(WebExtensionProperties.class)
 @ComponentScan(basePackages = "cn.t.extension.springboot.starters.web.component")
 @Configuration
