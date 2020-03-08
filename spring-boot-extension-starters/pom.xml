@@ -29,7 +29,7 @@
             </dependency>
             <dependency>
                 <groupId>cn.t.extension.springboot</groupId>
-                <artifactId>spring-boot-extension-starters-web</artifactId>
+                <artifactId>spring-boot-extension-starters</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
