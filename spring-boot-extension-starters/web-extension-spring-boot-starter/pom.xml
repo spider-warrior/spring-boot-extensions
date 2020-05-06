@@ -22,6 +22,10 @@
             <artifactId>common-base-service</artifactId>
         </dependency>
         <dependency>
+            <groupId>cn.t.base</groupId>
+            <artifactId>common-base-response</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
             <optional>true</optional>

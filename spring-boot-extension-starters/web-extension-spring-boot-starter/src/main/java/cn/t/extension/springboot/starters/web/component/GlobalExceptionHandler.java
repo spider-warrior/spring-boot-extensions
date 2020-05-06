@@ -1,8 +1,9 @@
 package cn.t.extension.springboot.starters.web.component;
 
+import cn.t.base.common.response.ResultVo;
+import cn.t.base.common.response.ResultVoWrapper;
 import cn.t.base.common.service.ErrorInfo;
 import cn.t.base.common.service.ServiceException;
-import cn.t.extension.springboot.starters.web.vo.ResultVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;

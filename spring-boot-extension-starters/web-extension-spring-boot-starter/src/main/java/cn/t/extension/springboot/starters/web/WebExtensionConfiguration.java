@@ -1,5 +1,6 @@
 package cn.t.extension.springboot.starters.web;
 
+import cn.t.base.common.response.ResultVoWrapper;
 import cn.t.extension.springboot.starters.web.component.WebExtensionProperties;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -20,6 +21,11 @@ import javax.validation.ValidatorFactory;
 public class WebExtensionConfiguration {
 
     private WebExtensionProperties webExtensionProperties;
+
+    @Bean
+    public ResultVoWrapper resultVoWrapper() {
+        return new ResultVoWrapper();
+    }
 
     @Bean
     public Validator validator(){
