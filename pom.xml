@@ -40,9 +40,16 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>cn.t.base</groupId>
-                <artifactId>common-base</artifactId>
+                <groupId>cn.t</groupId>
+                <artifactId>base-module-dependency-management</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>cn.t</groupId>
+                <artifactId>common-module-dependency-management</artifactId>
+                <version>1.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

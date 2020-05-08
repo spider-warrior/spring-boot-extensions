@@ -18,11 +18,11 @@
             <artifactId>validator-util</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.t.base</groupId>
+            <groupId>cn.t</groupId>
             <artifactId>common-base-service</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.t.base</groupId>
+            <groupId>cn.t</groupId>
             <artifactId>common-base-response</artifactId>
         </dependency>
         <dependency>
