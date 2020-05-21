@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  **/
 public class LogbackUtil {
 
-    private static void addFileAppenderLogger(String name, String fileName, int maxHistory) {
+    public static void addFileAppenderLogger(String name, String fileName, int maxHistory) {
         LoggerContext loggerContext = (LoggerContext)LoggerFactory.getILoggerFactory();
         Logger logger = loggerContext.getLogger(name);
         logger.setAdditive(false);

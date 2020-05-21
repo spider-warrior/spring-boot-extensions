@@ -1,4 +1,4 @@
-package cn.t.extension.springboot.starters.mybatis.config;
+package cn.t.extension.springboot.starters.mybatis;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
