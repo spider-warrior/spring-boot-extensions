@@ -15,12 +15,12 @@ import org.slf4j.LoggerFactory;
  **/
 public class LogbackUtil {
 
-    private static Logger buildFileAppenderLogger(String name, String fileName, int maxHistory) {
+    private static void addFileAppenderLogger(String name, String fileName, int maxHistory) {
         LoggerContext loggerContext = (LoggerContext)LoggerFactory.getILoggerFactory();
         Logger logger = loggerContext.getLogger(name);
         logger.setAdditive(false);
         logger.addAppender(buildRollingFileAppender(loggerContext, fileName, maxHistory));
-        return logger;
+        loggerContext.getLoggerList().add(logger);
     }
 
     private static RollingFileAppender<ILoggingEvent> buildRollingFileAppender(LoggerContext loggerContext, String fileName, int maxHistory) {
