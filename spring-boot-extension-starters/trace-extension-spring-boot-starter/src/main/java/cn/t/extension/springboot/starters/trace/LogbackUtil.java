@@ -36,6 +36,7 @@ public class LogbackUtil {
         rollingPolicy.setMaxFileSize(FileSize.valueOf("100MB"));
         rollingPolicy.start();
 
+        appender.setFile(fileName);
         appender.setContext(loggerContext);
         appender.setRollingPolicy(rollingPolicy);
         appender.setLayout(new JsonLogLayout());
