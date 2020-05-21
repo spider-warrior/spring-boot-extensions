@@ -12,4 +12,10 @@
     <artifactId>trace-extension-spring-boot-starter</artifactId>
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>cn.t</groupId>
+            <artifactId>logback-trace</artifactId>
+        </dependency>
+    </dependencies>
 </project>
