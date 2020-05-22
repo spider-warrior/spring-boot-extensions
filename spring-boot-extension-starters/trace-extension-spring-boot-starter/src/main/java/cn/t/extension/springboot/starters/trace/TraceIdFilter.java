@@ -2,8 +2,6 @@ package cn.t.extension.springboot.starters.trace;
 
 import cn.t.common.trace.generic.TraceIdGenerator;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -23,10 +21,9 @@ import static cn.t.common.trace.generic.TraceConstants.TRACE_ID_LOG_NAME;
  * @author yj
  * @since 2020-04-13 11:52
  **/
-@Component
 public class TraceIdFilter extends OncePerRequestFilter {
 
-    private String applicationName;
+    private final String applicationName;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -38,8 +35,7 @@ public class TraceIdFilter extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 
-    @Value("${spring.application.name}")
-    public void setApplicationName(String applicationName) {
+    public TraceIdFilter(String applicationName) {
         this.applicationName = applicationName;
     }
 }
