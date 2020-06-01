@@ -6,7 +6,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
-import cn.t.common.trace.loback.JsonLogLayout;
+import cn.t.common.trace.logback.JsonLogLayout;
 import org.slf4j.LoggerFactory;
 
 /**
