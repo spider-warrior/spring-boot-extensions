@@ -9,23 +9,27 @@ import ch.qos.logback.core.util.FileSize;
 import cn.t.common.trace.logback.JsonLogLayout;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+
+import static ch.qos.logback.core.util.FileSize.KB_COEFFICIENT;
+
 /**
  * @author yj
  * @since 2020-05-21 12:42
  **/
 public class LogbackUtil {
 
-    public static void addFileAppenderLogger(String name, String fileName, int maxHistory) {
+    public static void addFileAppenderLogger(String directory, String fileName, int maxHistory, int maxFileSize) {
         LoggerContext loggerContext = (LoggerContext)LoggerFactory.getILoggerFactory();
-        Logger logger = loggerContext.getLogger(name);
-        logger.setAdditive(false);
-        logger.addAppender(buildRollingFileAppender(loggerContext, fileName, maxHistory));
-        loggerContext.getLoggerList().add(logger);
+        Logger root = (Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        root.addAppender(buildRollingFileBasedTimeAppender(loggerContext, directory, fileName, maxHistory, maxFileSize));
     }
 
-    private static RollingFileAppender<ILoggingEvent> buildRollingFileAppender(LoggerContext loggerContext, String fileName, int maxHistory) {
+    private static RollingFileAppender<ILoggingEvent> buildRollingFileBasedTimeAppender(LoggerContext loggerContext, String directory, String fileName, int maxHistory, int maxFileSize) {
         RollingFileAppender<ILoggingEvent> appender = new RollingFileAppender<>();
         appender.setName("TracedRollingFileAppender");
+        appender.setContext(loggerContext);
+        appender.setFile(directory + File.separator +fileName);
 
         //rolling policy
         SizeAndTimeBasedRollingPolicy<ILoggingEvent> rollingPolicy = new SizeAndTimeBasedRollingPolicy<>();
@@ -33,13 +37,13 @@ public class LogbackUtil {
         rollingPolicy.setParent(appender);
         rollingPolicy.setFileNamePattern(fileName + ".%d{yyyy-MM-dd}.%i.log");
         rollingPolicy.setMaxHistory(maxHistory);
-        rollingPolicy.setMaxFileSize(FileSize.valueOf("100MB"));
+        rollingPolicy.setMaxFileSize(new FileSize(maxFileSize * KB_COEFFICIENT));
         rollingPolicy.start();
-
-        appender.setFile(fileName);
-        appender.setContext(loggerContext);
         appender.setRollingPolicy(rollingPolicy);
-        appender.setLayout(new JsonLogLayout());
+
+        JsonLogLayout jsonLogLayout = new JsonLogLayout();
+        jsonLogLayout.start();
+        appender.setLayout(jsonLogLayout);
         appender.start();
         return appender;
     }

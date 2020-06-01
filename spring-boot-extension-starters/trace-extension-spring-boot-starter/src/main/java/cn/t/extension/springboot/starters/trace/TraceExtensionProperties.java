@@ -1,6 +1,8 @@
 package cn.t.extension.springboot.starters.trace;
 
 
+import cn.t.util.common.StringUtil;
+import cn.t.util.common.SystemUtil;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.io.File;
@@ -12,16 +14,38 @@ import java.io.File;
 @ConfigurationProperties(prefix = "extension.trace")
 public class TraceExtensionProperties {
 
-    private String traceHome = "~" + File.separator + "logs";
-
+    private String appName;
+    private String traceHome = SystemUtil.getSysProperty("user.home") + File.separator + "logs" + File.separator + "trace";
+    private String traceFileName;
     private int maxHistories = 10;
+    private int maxFieSize = 10;
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
 
     public String getTraceHome() {
-        return traceHome;
+        return this.traceHome;
     }
 
     public void setTraceHome(String traceHome) {
         this.traceHome = traceHome;
+    }
+
+    public String getTraceFileName() {
+        if(StringUtil.isEmpty(traceFileName)) {
+            return (StringUtil.isEmpty(getAppName()) ? "undefined" : getAppName()) + File.separator + "trace.log";
+        } else {
+            return traceFileName;
+        }
+    }
+
+    public void setTraceFileName(String traceFileName) {
+        this.traceFileName = traceFileName;
     }
 
     public int getMaxHistories() {
@@ -30,5 +54,13 @@ public class TraceExtensionProperties {
 
     public void setMaxHistories(int maxHistories) {
         this.maxHistories = maxHistories;
+    }
+
+    public int getMaxFieSize() {
+        return maxFieSize;
+    }
+
+    public void setMaxFieSize(int maxFieSize) {
+        this.maxFieSize = maxFieSize;
     }
 }
