@@ -20,7 +20,7 @@ import javax.validation.ValidatorFactory;
 @Configuration
 public class WebExtensionConfiguration {
 
-    private WebExtensionProperties webExtensionProperties;
+    private final WebExtensionProperties webExtensionProperties;
 
     @Bean
     public ResultVoWrapper resultVoWrapper() {
