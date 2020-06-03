@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    private ResultVoWrapper resultVoWrapper;
+    private final ResultVoWrapper resultVoWrapper;
 
     @ExceptionHandler(DuplicateKeyException.class)
     public ResultVo duplicateKeyException(DuplicateKeyException e) {
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResultVo noHandlerFound(MethodArgumentNotValidException e) {
+    public ResultVo methodArgumentNotValid(MethodArgumentNotValidException e) {
         logger.error("cat a MethodArgumentNotValidException", e);
         BindingResult bindingResult = e.getBindingResult();
         List<ObjectError> objectErrorList =  bindingResult.getAllErrors();
