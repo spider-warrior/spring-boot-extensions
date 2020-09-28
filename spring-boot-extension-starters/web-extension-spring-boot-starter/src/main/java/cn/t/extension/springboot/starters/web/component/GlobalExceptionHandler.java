@@ -6,7 +6,6 @@ import cn.t.base.common.service.ErrorInfo;
 import cn.t.base.common.service.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -27,12 +26,6 @@ public class GlobalExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     private final ResultVoWrapper resultVoWrapper;
-
-    @ExceptionHandler(DuplicateKeyException.class)
-    public ResultVo duplicateKeyException(DuplicateKeyException e) {
-        logger.error("cat a DuplicateKeyException", e);
-        return resultVoWrapper.buildFail();
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResultVo methodArgumentNotValid(MethodArgumentNotValidException e) {

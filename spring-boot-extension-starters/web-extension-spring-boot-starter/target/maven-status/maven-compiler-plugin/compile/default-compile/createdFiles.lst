@@ -1,4 +1,4 @@
-cn/t/extension/springboot/starters/web/component/GlobalExceptionHandler.class
-META-INF/spring-configuration-metadata.json
-cn/t/extension/springboot/starters/web/WebExtensionConfiguration.class
-cn/t/extension/springboot/starters/web/component/WebExtensionProperties.class
+cn\t\extension\springboot\starters\web\WebExtensionConfiguration.class
+cn\t\extension\springboot\starters\web\component\WebExtensionProperties.class
+META-INF\spring-configuration-metadata.json
+cn\t\extension\springboot\starters\web\component\GlobalExceptionHandler.class
