@@ -14,8 +14,8 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-@AutoConfigureBefore(ValidationAutoConfiguration.class)
-@EnableConfigurationProperties(WebExtensionProperties.class)
+@AutoConfigureBefore(value = ValidationAutoConfiguration.class)
+@EnableConfigurationProperties(value = {WebExtensionProperties.class})
 @ComponentScan(basePackages = "cn.t.extension.springboot.starters.web.component")
 @Configuration
 public class WebExtensionConfiguration {
@@ -36,7 +36,7 @@ public class WebExtensionConfiguration {
         return validatorFactory.getValidator();
     }
 
-    public WebExtensionConfiguration(WebExtensionProperties webExtensionProperties) {
+    public WebExtensionConfiguration( WebExtensionProperties webExtensionProperties) {
         this.webExtensionProperties = webExtensionProperties;
     }
 }
