@@ -1,4 +1,4 @@
-package cn.t.extension.springboot.starters.web.component;
+package cn.t.extension.springboot.starters.web;
 
 import cn.t.base.common.response.ResultVo;
 import cn.t.base.common.response.ResultVoWrapper;

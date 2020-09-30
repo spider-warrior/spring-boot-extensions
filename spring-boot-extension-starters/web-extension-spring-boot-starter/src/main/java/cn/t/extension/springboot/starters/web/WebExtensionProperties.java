@@ -1,4 +1,4 @@
-package cn.t.extension.springboot.starters.web.component;
+package cn.t.extension.springboot.starters.web;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
