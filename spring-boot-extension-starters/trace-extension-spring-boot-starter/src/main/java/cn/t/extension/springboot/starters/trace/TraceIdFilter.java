@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static cn.t.common.trace.generic.TraceConstants.TRACE_ID_HEADER_NAME;
-import static cn.t.common.trace.generic.TraceConstants.TRACE_ID_LOG_NAME;
+import static cn.t.common.trace.generic.TraceConstants.TRACE_ID_NAME;
 
 
 /**
@@ -31,8 +31,12 @@ public class TraceIdFilter extends OncePerRequestFilter {
         if(StringUtils.isEmpty(traceId)) {
             traceId = TraceIdGenerator.generateTraceId(applicationName);
         }
-        MDC.put(TRACE_ID_LOG_NAME, traceId);
-        chain.doFilter(request, response);
+        MDC.put(TRACE_ID_NAME, traceId);
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            chain.doFilter(request, response);
+        }
     }
 
     public TraceIdFilter(String applicationName) {
