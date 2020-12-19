@@ -35,7 +35,7 @@ public class TraceIdFilter extends OncePerRequestFilter {
         try {
             chain.doFilter(request, response);
         } finally {
-            chain.doFilter(request, response);
+            MDC.remove(TRACE_ID_NAME);
         }
     }
 
