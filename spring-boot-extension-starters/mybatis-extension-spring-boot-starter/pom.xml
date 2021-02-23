@@ -30,6 +30,7 @@
         <dependency>
             <groupId>cn.t</groupId>
             <artifactId>mybatis-id-generator</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
