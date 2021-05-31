@@ -1,0 +1,198 @@
+{
+  "groups": [
+    {
+      "name": "starter.method-invoke-monitor",
+      "type": "com.ifenxi.starter.mim.setting.MethodInvokeMonitorSetting",
+      "sourceType": "com.ifenxi.starter.mim.setting.MethodInvokeMonitorSetting"
+    },
+    {
+      "name": "starter.method-invoke-monitor.controller-config",
+      "type": "com.ifenxi.starter.mim.setting.StereotypeConfig",
+      "sourceType": "com.ifenxi.starter.mim.setting.MethodInvokeMonitorSetting",
+      "sourceMethod": "getControllerConfig()"
+    },
+    {
+      "name": "starter.method-invoke-monitor.dao-config",
+      "type": "com.ifenxi.starter.mim.setting.StereotypeConfig",
+      "sourceType": "com.ifenxi.starter.mim.setting.MethodInvokeMonitorSetting",
+      "sourceMethod": "getDaoConfig()"
+    },
+    {
+      "name": "starter.method-invoke-monitor.http-config",
+      "type": "com.ifenxi.starter.mim.setting.StereotypeConfig",
+      "sourceType": "com.ifenxi.starter.mim.setting.MethodInvokeMonitorSetting",
+      "sourceMethod": "getHttpConfig()"
+    },
+    {
+      "name": "starter.method-invoke-monitor.rpc-config",
+      "type": "com.ifenxi.starter.mim.setting.StereotypeConfig",
+      "sourceType": "com.ifenxi.starter.mim.setting.MethodInvokeMonitorSetting",
+      "sourceMethod": "getRpcConfig()"
+    },
+    {
+      "name": "starter.method-invoke-monitor.service-config",
+      "type": "com.ifenxi.starter.mim.setting.StereotypeConfig",
+      "sourceType": "com.ifenxi.starter.mim.setting.MethodInvokeMonitorSetting",
+      "sourceMethod": "getServiceConfig()"
+    }
+  ],
+  "properties": [
+    {
+      "name": "starter.method-invoke-monitor.controller-config.expression-list",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.ifenxi.starter.mim.setting.StereotypeConfig"
+    },
+    {
+      "name": "starter.method-invoke-monitor.controller-config.log-level",
+      "type": "java.lang.String",
+      "sourceType": "com.ifenxi.starter.mim.setting.StereotypeConfig"
+    },
+    {
+      "name": "starter.method-invoke-monitor.dao-config.expression-list",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.ifenxi.starter.mim.setting.StereotypeConfig"
+    },
+    {
+      "name": "starter.method-invoke-monitor.dao-config.log-level",
+      "type": "java.lang.String",
+      "sourceType": "com.ifenxi.starter.mim.setting.StereotypeConfig"
+    },
+    {
+      "name": "starter.method-invoke-monitor.http-config.expression-list",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.ifenxi.starter.mim.setting.StereotypeConfig"
+    },
+    {
+      "name": "starter.method-invoke-monitor.http-config.log-level",
+      "type": "java.lang.String",
+      "sourceType": "com.ifenxi.starter.mim.setting.StereotypeConfig"
+    },
+    {
+      "name": "starter.method-invoke-monitor.log-home",
+      "type": "java.lang.String",
+      "sourceType": "com.ifenxi.starter.mim.setting.MethodInvokeMonitorSetting"
+    },
+    {
+      "name": "starter.method-invoke-monitor.rpc-config.expression-list",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.ifenxi.starter.mim.setting.StereotypeConfig"
+    },
+    {
+      "name": "starter.method-invoke-monitor.rpc-config.log-level",
+      "type": "java.lang.String",
+      "sourceType": "com.ifenxi.starter.mim.setting.StereotypeConfig"
+    },
+    {
+      "name": "starter.method-invoke-monitor.service-config.expression-list",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.ifenxi.starter.mim.setting.StereotypeConfig"
+    },
+    {
+      "name": "starter.method-invoke-monitor.service-config.log-level",
+      "type": "java.lang.String",
+      "sourceType": "com.ifenxi.starter.mim.setting.StereotypeConfig"
+    }
+  ],
+  "hints": [
+    {
+      "name": "starter.method-invoke-monitor.dao-config.log-level",
+      "values": [
+        {
+          "value": "trace"
+        },
+        {
+          "value": "debug"
+        },
+        {
+          "value": "info"
+        },
+        {
+          "value": "warn"
+        },
+        {
+          "value": "error"
+        }
+      ]
+    },
+    {
+      "name": "starter.method-invoke-monitor.service-config.log-level",
+      "values": [
+        {
+          "value": "trace"
+        },
+        {
+          "value": "debug"
+        },
+        {
+          "value": "info"
+        },
+        {
+          "value": "warn"
+        },
+        {
+          "value": "error"
+        }
+      ]
+    },
+    {
+      "name": "starter.method-invoke-monitor.controller-config.log-level",
+      "values": [
+        {
+          "value": "trace"
+        },
+        {
+          "value": "debug"
+        },
+        {
+          "value": "info"
+        },
+        {
+          "value": "warn"
+        },
+        {
+          "value": "error"
+        }
+      ]
+    },
+    {
+      "name": "starter.method-invoke-monitor.rpc-config.log-level",
+      "values": [
+        {
+          "value": "trace"
+        },
+        {
+          "value": "debug"
+        },
+        {
+          "value": "info"
+        },
+        {
+          "value": "warn"
+        },
+        {
+          "value": "error"
+        }
+      ]
+    },
+    {
+      "name": "starter.method-invoke-monitor.http-config.log-level",
+      "values": [
+        {
+          "value": "trace"
+        },
+        {
+          "value": "debug"
+        },
+        {
+          "value": "info"
+        },
+        {
+          "value": "warn"
+        },
+        {
+          "value": "error"
+        }
+      ]
+    }
+  ]
+}

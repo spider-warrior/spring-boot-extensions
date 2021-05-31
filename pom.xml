@@ -13,7 +13,6 @@
     </modules>
     <name>spring-boot extensions</name>
     <description>spring-boot extensions</description>
-    <url>https://github.com/spider-warrior/spring-boot-extensions</url>
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
