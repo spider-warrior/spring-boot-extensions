@@ -1,7 +1,7 @@
 package cn.t.extension.springboot.starters.mybatis;
 
-import cn.t.common.mybatis.idgenerator.RedisIdGenInterceptor;
-import cn.t.common.mybatis.idgenerator.RedisKeyGenerator;
+import cn.t.common.mybatis.keygenerator.RedisIdGenInterceptor;
+import cn.t.common.mybatis.keygenerator.RedisKeyGenerator;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ import org.springframework.data.redis.core.ValueOperations;
 @Configuration
 public class MybatisExtensionConfiguration {
 
-    private MybatisExtensionProperties mybatisExtensionProperties;
+    private final MybatisExtensionProperties mybatisExtensionProperties;
 
     @Bean
     public RedisIdGenInterceptor redisIdGenInterceptor(ValueOperations<String, String> valueOperations) {

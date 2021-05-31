@@ -1,2 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  cn.t.extension.springboot.starters.trace.TraceConfig
+cn.t.extension.springboot.starters.trace.WebTraceConfig,\
+cn.t.extension.springboot.starters.trace.FeignTraceConfig,\
+cn.t.extension.springboot.starters.trace.AsyncTraceConfig

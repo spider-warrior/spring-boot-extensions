@@ -9,10 +9,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @version V1.0
  * @since 2020-03-08 20:53
  **/
-@ConfigurationProperties(prefix = "extension.web.validator")
-public class WebExtensionProperties {
+@ConfigurationProperties(prefix = "starter.spring-boot-web")
+public class SpringBootWebProperties {
 
-    private Boolean failFast = Boolean.FALSE;
+    private Boolean failFast = Boolean.TRUE;
 
     public Boolean getFailFast() {
         return failFast;

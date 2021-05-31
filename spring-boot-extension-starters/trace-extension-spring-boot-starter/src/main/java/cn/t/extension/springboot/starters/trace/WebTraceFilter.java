@@ -2,6 +2,7 @@ package cn.t.extension.springboot.starters.trace;
 
 import cn.t.common.trace.generic.TraceIdGenerator;
 import org.slf4j.MDC;
+import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -11,8 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static cn.t.common.trace.generic.TraceConstants.*;
 import static cn.t.common.trace.generic.TraceConstants.TRACE_ID_HEADER_NAME;
-import static cn.t.common.trace.generic.TraceConstants.TRACE_ID_NAME;
 
 
 /**
@@ -21,25 +22,27 @@ import static cn.t.common.trace.generic.TraceConstants.TRACE_ID_NAME;
  * @author yj
  * @since 2020-04-13 11:52
  **/
-public class TraceIdFilter extends OncePerRequestFilter {
+public class WebTraceFilter extends OncePerRequestFilter {
 
     private final String applicationName;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws IOException, ServletException {
         String traceId = request.getHeader(TRACE_ID_HEADER_NAME);
         if(StringUtils.isEmpty(traceId)) {
-            traceId = TraceIdGenerator.generateTraceId(applicationName);
+            traceId = TraceIdGenerator.generateTraceId(applicationName, request.getRemoteAddr());
         }
         MDC.put(TRACE_ID_NAME, traceId);
+        MDC.put(CLIENT_ID_NAME, request.getHeader(TRACE_CLIENT_ID_HEADER_NAME));
         try {
             chain.doFilter(request, response);
         } finally {
             MDC.remove(TRACE_ID_NAME);
+            MDC.remove(CLIENT_ID_NAME);
         }
     }
 
-    public TraceIdFilter(String applicationName) {
+    public WebTraceFilter(String applicationName) {
         this.applicationName = applicationName;
     }
 }
