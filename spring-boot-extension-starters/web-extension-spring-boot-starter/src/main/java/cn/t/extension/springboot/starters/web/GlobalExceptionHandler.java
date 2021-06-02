@@ -61,45 +61,34 @@ public class GlobalExceptionHandler {
         return errorFieldMap;
     }
 
-    /**
-     * 404
-     */
+    // 404
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResultVo noHandlerFound(NoHandlerFoundException e, HttpServletRequest request) {
         logger.error("cat a NoHandlerFoundException: " + request.getRequestURI(), e);
         return ResultVo.buildFail(ErrorInfoEnum.SOURCE_NOT_FOUND.errorInfo);
     }
 
-    /**
-     * 400
-     * */
+    // 400
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResultVo messageNotReadable(HttpMessageNotReadableException e, HttpServletRequest request) {
         logger.error("cat a HttpMessageNotReadableException: " + request.getRequestURI(), e);
         return ResultVo.buildFail(ErrorInfoEnum.BAD_PARAM.errorInfo);
     }
 
-    /**
-     * 405
-     * */
+    // 405
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResultVo methodNotSupport(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
         logger.error("cat a HttpRequestMethodNotSupportedException: " + request.getRequestURI(), e);
         return ResultVo.buildFail(ErrorInfoEnum.METHOD_NOT_SUPPORT.errorInfo);
     }
 
-    /**
-     * 415
-     * */
+    // 415
     @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
     public ResultVo mediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException e, HttpServletRequest request) {
         logger.error("cat a HttpMediaTypeNotAcceptableException: " + request.getRequestURI(), e);
         return ResultVo.buildFail(ErrorInfoEnum.MEDIA_TYPE_NOT_SUPPORT.errorInfo);
     }
 
-    /**
-     * service exception
-     */
     @ExceptionHandler(ServiceException.class)
     public ResultVo exception(ServiceException e, HttpServletRequest request) {
         if(StringUtils.isEmpty(e.getCode())) {
@@ -114,9 +103,7 @@ public class GlobalExceptionHandler {
         }
     }
 
-    /**
-     * 500
-     */
+    // 500
     @ExceptionHandler(Throwable.class)
     public ResultVo exception(Throwable t, HttpServletRequest request) {
         logger.error("catch a exception: " + request.getRequestURI(), t);

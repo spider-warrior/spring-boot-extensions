@@ -47,11 +47,9 @@ public class GlobalErrorController extends AbstractErrorController {
         return null;
     }
 
-    /**
-     * 加载 /error文件夹下code资源
-     * 格式: /error/400.html, /error/500.html
-     * 如果找不到则加载: /error/4xx.html, /error/5xx.html
-     */
+    // 加载 /error文件夹下code资源
+    // 格式: /error/400.html, /error/500.html
+    // 如果找不到则加载: /error/4xx.html, /error/5xx.html
     @RequestMapping(produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView errorHtml(HttpServletRequest request, HttpServletResponse response) {
         HttpStatus status = getStatus(request);

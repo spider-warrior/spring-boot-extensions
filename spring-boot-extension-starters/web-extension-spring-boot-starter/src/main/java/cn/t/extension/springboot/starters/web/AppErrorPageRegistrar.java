@@ -9,8 +9,8 @@ import org.springframework.http.HttpStatus;
 
 /**
  * ResourceHttpRequestHandler返回值:
- * 当status为400时 --> 404.html
- * 当status为500时 --> 500.html
+ * 当status为400时  404.html
+ * 当status为500时  500.html
  * 由org.apache.catalina.core.StandardHostValve#status方法找到errorPage渲染
  * 如果未配置则forward到/error
  */
