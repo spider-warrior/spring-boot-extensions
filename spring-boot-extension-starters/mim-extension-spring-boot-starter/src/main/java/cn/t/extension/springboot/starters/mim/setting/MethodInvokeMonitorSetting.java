@@ -66,13 +66,13 @@ public class MethodInvokeMonitorSetting {
     @Override
     public String toString() {
         return "MethodInvokeMonitorSettings{" +
-                "logHome='" + logHome + '\'' +
-                ", daoConfig=" + daoConfig +
-                ", serviceConfig=" + serviceConfig +
-                ", controllerConfig=" + controllerConfig +
-                ", rpcConfig=" + rpcConfig +
-                ", httpConfig=" + httpConfig +
-                '}';
+            "logHome='" + logHome + '\'' +
+            ", daoConfig=" + daoConfig +
+            ", serviceConfig=" + serviceConfig +
+            ", controllerConfig=" + controllerConfig +
+            ", rpcConfig=" + rpcConfig +
+            ", httpConfig=" + httpConfig +
+            '}';
     }
 
 

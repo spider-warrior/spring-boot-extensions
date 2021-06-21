@@ -43,7 +43,7 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
     }
 
     public MethodInvokeMonitorAroundAdvice(String loggerName, String logHome, String logLevel) {
-        if(StringUtils.isEmpty(logHome)) {
+        if (!StringUtils.hasText(logHome)) {
             logHome = DEFAULT_LOG_HOME;
         }
         this.loggerName = loggerName;
@@ -54,7 +54,7 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         ApplicationContext applicationContext = event.getApplicationContext();
-        if(applicationContext.getParent() != null && applicationContext.getParent().getParent() == null) {
+        if (applicationContext.getParent() != null && applicationContext.getParent().getParent() == null) {
             interceptor = new MimInterceptor(LogbackUtil.buildLogger(loggerName, this.logLevel, this.logHome, this.loggerName, 10, 10240));
         }
     }
@@ -63,12 +63,14 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
     private interface InternalInterceptor {
         Object invoke(MethodInvocation invocation) throws Throwable;
     }
+
     private static class NoActionInterceptor implements InternalInterceptor {
         @Override
         public Object invoke(MethodInvocation invocation) throws Throwable {
             return invocation.proceed();
         }
     }
+
     private static class MimInterceptor implements InternalInterceptor {
         private final Logger aopLogger;
 
@@ -76,7 +78,7 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
         public Object invoke(MethodInvocation invocation) throws Throwable {
             Method method = invocation.getMethod();
             MonitorConfig monitorConfig = method.getAnnotation(MonitorConfig.class);
-            if(monitorConfig != null && monitorConfig.ignore()) {
+            if (monitorConfig != null && monitorConfig.ignore()) {
                 return invocation.proceed();
             } else {
                 long start = System.currentTimeMillis();
@@ -102,7 +104,7 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
             long rt = System.currentTimeMillis() - start;
             boolean inputPrint;
             boolean outputPrint;
-            if(monitorConfig == null) {
+            if (monitorConfig == null) {
                 inputPrint = true;
                 outputPrint = true;
             } else {
@@ -116,7 +118,7 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
             MDC.put(TraceConstants.TRACE_SUCCESS_NAME, String.valueOf(success));
             MDC.put(TraceConstants.TRACE_RT_NAME, String.valueOf(rt));
             long mt = System.currentTimeMillis() - start;
-            if(success) {
+            if (success) {
                 aopLogger.info("mt={}, input={}, output={}", mt, inputString, buildOutputString(outputPrint, method.getReturnType(), result));
             } else {
                 aopLogger.info("mt={}, input={}, error={}", mt, inputString, buildExceptionString(exception));
@@ -128,11 +130,11 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
         }
 
         private String buildInputString(boolean inputPrint, Object[] arguments, Parameter[] parameters) {
-            if(!inputPrint) {
+            if (!inputPrint) {
                 return "ignored";
             } else {
                 Map<String, Object> inputMap = new HashMap<>();
-                for(int i=0; i<parameters.length; i++) {
+                for (int i = 0; i<parameters.length; i++) {
                     inputMap.put(parameters[i].getName(), arguments[i]);
                 }
                 return inputMap.toString();
@@ -140,16 +142,16 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
         }
 
         private String buildOutputString(boolean outputPrint, Class<?> type, Object result) {
-            if(!outputPrint) {
+            if (!outputPrint) {
                 return "ignored";
             } else {
-                if(void.class.equals(type)) {
+                if (void.class.equals(type)) {
                     return "type: void";
                 } else {
                     String resultJson = "serializeFailed";
                     try {
                         resultJson = JsonUtil.serialize(result);
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         logger.error("", e);
                     }
                     return "type: " + type.getSimpleName() + ", result: " + resultJson;
@@ -158,7 +160,7 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
         }
 
         private String buildExceptionString(Exception e) {
-            if(e == null) {
+            if (e == null) {
                 return "";
             }
             return e.getMessage();

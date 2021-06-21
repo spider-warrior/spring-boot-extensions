@@ -30,8 +30,8 @@ public class StereotypeConfig {
     @Override
     public String toString() {
         return "StereotypeConfig{" +
-                "logLevel='" + logLevel + '\'' +
-                ", expressionList=" + expressionList +
-                '}';
+            "logLevel='" + logLevel + '\'' +
+            ", expressionList=" + expressionList +
+            '}';
     }
 }
