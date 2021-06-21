@@ -29,7 +29,7 @@ public class WebTraceFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws IOException, ServletException {
         String traceId = request.getHeader(TRACE_ID_HEADER_NAME);
-        if(StringUtils.isEmpty(traceId)) {
+        if(!StringUtils.hasText(traceId)) {
             traceId = TraceIdGenerator.generateTraceId(applicationName, request.getRemoteAddr());
         }
         MDC.put(TRACE_ID_NAME, traceId);
