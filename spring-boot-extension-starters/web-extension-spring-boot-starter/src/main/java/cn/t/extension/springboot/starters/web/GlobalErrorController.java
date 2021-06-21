@@ -36,7 +36,7 @@ public class GlobalErrorController extends AbstractErrorController {
     }
 
     public GlobalErrorController(ErrorAttributes errorAttributes, ErrorProperties errorProperties,
-                                List<ErrorViewResolver> errorViewResolvers) {
+                                 List<ErrorViewResolver> errorViewResolvers) {
         super(errorAttributes, errorViewResolvers);
         Assert.notNull(errorProperties, "ErrorProperties must not be null");
         this.errorProperties = errorProperties;

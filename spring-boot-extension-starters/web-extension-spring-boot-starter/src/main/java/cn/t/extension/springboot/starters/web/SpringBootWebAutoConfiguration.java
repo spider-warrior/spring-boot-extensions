@@ -46,9 +46,9 @@ public class SpringBootWebAutoConfiguration {
     @Bean
     public Validator validator(){
         ValidatorFactory validatorFactory = Validation.byProvider(HibernateValidator.class)
-                .configure()
-                .failFast(springBootWebProperties.getFailFast())
-                .buildValidatorFactory();
+            .configure()
+            .failFast(springBootWebProperties.getFailFast())
+            .buildValidatorFactory();
         return validatorFactory.getValidator();
     }
 

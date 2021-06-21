@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
         } else {
             vo = ResultVo.buildFail(ErrorInfoEnum.BAD_PARAM.errorInfo, buildErrorField(bindingResult));
         }
-        logger.error("cat a MethodArgumentNotValidException, uri: "+ request.getRequestURI() +", {}", vo);
+        logger.warn("cat a MethodArgumentNotValidException, uri: "+ request.getRequestURI() +", {}", vo);
         return vo;
     }
 
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
     public ResultVo methodArgumentNotValid(BindException e, HttpServletRequest request) {
         BindingResult bindingResult = e.getBindingResult();
         ResultVo vo = ResultVo.buildFail(ErrorInfoEnum.BAD_PARAM.errorInfo, buildErrorField(bindingResult));
-        logger.error("cat a BindException, uri: "+ request.getRequestURI() +", {}", vo);
+        logger.warn("cat a BindException, uri: "+ request.getRequestURI() +", {}", vo);
         return vo;
     }
 
@@ -91,7 +91,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ServiceException.class)
     public ResultVo exception(ServiceException e, HttpServletRequest request) {
-        if(StringUtils.isEmpty(e.getCode())) {
+        if(!StringUtils.hasText(e.getCode())) {
             return ResultVo.buildFail();
         } else {
             logger.warn("业务异常, uri: {}, code: {}, msg: {}, data: {}", request.getRequestURI(), e.getCode(), e.getMessage(), e.getData());

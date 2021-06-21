@@ -22,9 +22,9 @@ public class AppErrorPageRegistrar implements ErrorPageRegistrar {
     @Override
     public void registerErrorPages(ErrorPageRegistry errorPageRegistry) {
         ErrorPage page404 = new ErrorPage(HttpStatus.NOT_FOUND, this.dispatcherServletPath
-                .getRelativePath("404.html"));
+            .getRelativePath("404.html"));
         ErrorPage page500 = new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, this.dispatcherServletPath
-                .getRelativePath("500.html"));
+            .getRelativePath("500.html"));
         errorPageRegistry.addErrorPages(page404, page500);
     }
 
