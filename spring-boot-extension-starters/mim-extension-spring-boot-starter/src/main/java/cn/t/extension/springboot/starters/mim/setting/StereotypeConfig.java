@@ -9,6 +9,9 @@ import java.util.List;
  **/
 public class StereotypeConfig {
     private String logLevel;
+    private String logHome = "${user.home}/logs/${appName}/mim";
+    private int logMaxHistory = 10;
+    private int logMaxFileSize = 10240;
     private List<String> expressionList;
 
     public String getLogLevel() {
@@ -17,6 +20,30 @@ public class StereotypeConfig {
 
     public void setLogLevel(String logLevel) {
         this.logLevel = logLevel;
+    }
+
+    public String getLogHome() {
+        return logHome;
+    }
+
+    public void setLogHome(String logHome) {
+        this.logHome = logHome;
+    }
+
+    public int getLogMaxHistory() {
+        return logMaxHistory;
+    }
+
+    public void setLogMaxHistory(int logMaxHistory) {
+        this.logMaxHistory = logMaxHistory;
+    }
+
+    public int getLogMaxFileSize() {
+        return logMaxFileSize;
+    }
+
+    public void setLogMaxFileSize(int logMaxFileSize) {
+        this.logMaxFileSize = logMaxFileSize;
     }
 
     public List<String> getExpressionList() {
@@ -31,6 +58,8 @@ public class StereotypeConfig {
     public String toString() {
         return "StereotypeConfig{" +
             "logLevel='" + logLevel + '\'' +
+            ", logMaxHistory=" + logMaxHistory +
+            ", logMaxFileSize=" + logMaxFileSize +
             ", expressionList=" + expressionList +
             '}';
     }

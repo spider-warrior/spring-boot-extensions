@@ -1,5 +1,6 @@
 package cn.t.extension.springboot.starters.mim;
 
+import cn.t.extension.springboot.starters.mim.setting.MethodInvokeMonitorSetting;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.ConfigurableEnvironment;
 
@@ -11,8 +12,14 @@ import org.springframework.core.env.ConfigurableEnvironment;
  * @since 2020-11-02 21:48
  **/
 public class MethodInvokeMonitorConfiguration {
+
     @Bean
-    MethodInvokeMonitorBeanRegister methodInvokeMonitorBeanRegister(ConfigurableEnvironment environment) {
-        return new MethodInvokeMonitorBeanRegister(environment);
+    MethodInvokeMonitorSetting methodInvokeMonitorSetting(ConfigurableEnvironment environment) {
+        return new MethodInvokeMonitorSetting(environment);
+    }
+
+    @Bean
+    MethodInvokeMonitorBeanRegister methodInvokeMonitorBeanRegister(MethodInvokeMonitorSetting methodInvokeMonitorSetting) {
+        return new MethodInvokeMonitorBeanRegister(methodInvokeMonitorSetting);
     }
 }

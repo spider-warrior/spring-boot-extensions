@@ -14,8 +14,6 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -32,7 +30,7 @@ public class MethodInvokeMonitorBeanRegister implements BeanDefinitionRegistryPo
     private static final Logger logger = LoggerFactory.getLogger(MethodInvokeMonitorBeanRegister.class);
     private final MethodInvokeMonitorSetting methodInvokeMonitorSetting;
 
-    private void registerMimMonitor(BeanDefinitionRegistry registry, String type, String logHome, StereotypeConfig stereotypeConfig) {
+    private void registerMimMonitor(BeanDefinitionRegistry registry, String type, StereotypeConfig stereotypeConfig) {
         if(stereotypeConfig == null) {
             logger.info("mim type: {} not config", type);
             return;
@@ -44,8 +42,7 @@ public class MethodInvokeMonitorBeanRegister implements BeanDefinitionRegistryPo
         }
         BeanDefinitionBuilder adviceBeanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(MethodInvokeMonitorAroundAdvice.class);
         adviceBeanDefinitionBuilder.addConstructorArgValue(buildLoggerName(type));
-        adviceBeanDefinitionBuilder.addConstructorArgValue(logHome);
-        adviceBeanDefinitionBuilder.addConstructorArgValue(stereotypeConfig.getLogLevel());
+        adviceBeanDefinitionBuilder.addConstructorArgValue(stereotypeConfig);
         AbstractBeanDefinition adviceBeanDefinition = adviceBeanDefinitionBuilder.getBeanDefinition();
         adviceBeanDefinition.setScope(BeanDefinition.SCOPE_SINGLETON);
         String adviceBeanName = buildAdviceBeanName(type);
@@ -86,18 +83,18 @@ public class MethodInvokeMonitorBeanRegister implements BeanDefinitionRegistryPo
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_DAO, methodInvokeMonitorSetting.getLogHome(), methodInvokeMonitorSetting.getDaoConfig());
-        registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_SERVICE, methodInvokeMonitorSetting.getLogHome(), methodInvokeMonitorSetting.getServiceConfig());
-        registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_CONTROLLER, methodInvokeMonitorSetting.getLogHome(), methodInvokeMonitorSetting.getControllerConfig());
-        registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_RPC, methodInvokeMonitorSetting.getLogHome(), methodInvokeMonitorSetting.getRpcConfig());
-        registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_HTTP, methodInvokeMonitorSetting.getLogHome(), methodInvokeMonitorSetting.getHttpConfig());
+        registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_DAO, methodInvokeMonitorSetting.getDaoConfig());
+        registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_SERVICE, methodInvokeMonitorSetting.getServiceConfig());
+        registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_CONTROLLER, methodInvokeMonitorSetting.getControllerConfig());
+        registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_RPC, methodInvokeMonitorSetting.getRpcConfig());
+        registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_HTTP, methodInvokeMonitorSetting.getHttpConfig());
     }
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
     }
 
-    public MethodInvokeMonitorBeanRegister(ConfigurableEnvironment environment) {
-        this.methodInvokeMonitorSetting = Binder.get(environment).bind("starter.method-invoke-monitor", MethodInvokeMonitorSetting.class).orElse(new MethodInvokeMonitorSetting());
+    public MethodInvokeMonitorBeanRegister(MethodInvokeMonitorSetting methodInvokeMonitorSetting) {
+        this.methodInvokeMonitorSetting = methodInvokeMonitorSetting;
     }
 }

@@ -1,6 +1,7 @@
 package cn.t.extension.springboot.starters.mim;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.*;
@@ -40,11 +41,15 @@ public class LogbackUtil {
 
     public static void configLogger(Logger logger, String logLevel, String directory, String fileName, int maxHistory, int maxFileSize) {
         ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
-        if(logger instanceof ch.qos.logback.classic.Logger && loggerFactory instanceof Context) {
+        if(logger instanceof ch.qos.logback.classic.Logger && loggerFactory instanceof LoggerContext) {
             ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger)logger;
             logbackLogger.setLevel(Level.toLevel(logLevel));
             logbackLogger.setAdditive(false);
-            logbackLogger.addAppender(buildRollingFileBasedTimeAppender((Context)loggerFactory, parseValue(logbackLogger.getLoggerContext(), directory), fileName, maxHistory, maxFileSize));
+            String appenderName = getMimLoggerAppender(logger.getName());
+            RollingFileAppender<ILoggingEvent> appender = (RollingFileAppender<ILoggingEvent>)logbackLogger.getAppender(appenderName);
+            if(appender == null) {
+                logbackLogger.addAppender(buildRollingFileBasedTimeAppender((LoggerContext)loggerFactory, appenderName, parseValue(logbackLogger.getLoggerContext(), directory), fileName, maxHistory, maxFileSize));
+            }
         } else {
             LOGGER.warn("不支持配置的日志类型: {}", logger.getClass().getName());
         }
@@ -56,9 +61,9 @@ public class LogbackUtil {
 //        root.addAppender(buildRollingFileBasedTimeAppender(loggerContext, directory, fileName, maxHistory, maxFileSize));
 //    }
 
-    private static RollingFileAppender<ILoggingEvent> buildRollingFileBasedTimeAppender(Context loggerContext, String directory, String fileName, int maxHistory, int maxFileSize) {
+    private static RollingFileAppender<ILoggingEvent> buildRollingFileBasedTimeAppender(LoggerContext loggerContext, String appenderName, String directory, String fileName, int maxHistory, int maxFileSize) {
         RollingFileAppender<ILoggingEvent> appender = new RollingFileAppender<>();
-        appender.setName("MimRollingFileAppender");
+        appender.setName(appenderName);
         appender.setContext(loggerContext);
         appender.setFile(appendFilePath(directory, fileName + LOG_FILE_EXTENSION_NAME));
 
@@ -73,6 +78,7 @@ public class LogbackUtil {
         appender.setRollingPolicy(rollingPolicy);
 
         MimLogLayout mimLogLayout = new MimLogLayout();
+        mimLogLayout.setContext(loggerContext);
         mimLogLayout.start();
         appender.setLayout(mimLogLayout);
         appender.start();
@@ -90,6 +96,10 @@ public class LogbackUtil {
             }
         }
         return interpretationContext.subst(value);
+    }
+
+    private static String getMimLoggerAppender(String loggerName) {
+        return loggerName + "-appender";
     }
 
     private static String appendFilePath(String original, String append) {
