@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mim-extension-spring-boot-starter</artifactId>
-    <version>1.0.3.RELEASE</version>
+    <version>1.0.4.RELEASE</version>
     <packaging>jar</packaging>
 
 
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>cn.t</groupId>
             <artifactId>common-logback-trace</artifactId>
-            <version>1.0.3.RELEASE</version>
+            <version>1.0.4.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
