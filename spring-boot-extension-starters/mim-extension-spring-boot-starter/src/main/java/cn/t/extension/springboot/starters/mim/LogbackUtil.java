@@ -4,18 +4,16 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.joran.spi.*;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
-import cn.t.common.trace.logback.MimLogLayout;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-
-import static ch.qos.logback.core.util.FileSize.KB_COEFFICIENT;
+import static ch.qos.logback.core.util.FileSize.MB_COEFFICIENT;
 
 /**
  * 日志util
@@ -28,59 +26,50 @@ import static ch.qos.logback.core.util.FileSize.KB_COEFFICIENT;
  **/
 public class LogbackUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogbackUtil.class);
-    private static final String LOG_FILE_EXTENSION_NAME = ".log";
+    private static volatile InterpretationContext interpretationContext;
     private static final Object lock = new Object();
-    private static InterpretationContext interpretationContext;
 
-    public static Logger  buildLogger(String loggerName, String logLevel, String directory, String fileName, int maxHistory, int maxFileSize) {
+    public static Logger createLogger(String loggerName, String level, String logFilePath, String logFilePathPattern, int maxHistory, int maxFileSizeInMb, String appenderName, Encoder<ILoggingEvent> encoder) {
         Logger logger = LoggerFactory.getLogger(loggerName);
-        configLogger(logger, logLevel, directory, fileName, maxHistory, maxFileSize);
+        configLogger(logger, level, logFilePath, logFilePathPattern, maxHistory, maxFileSizeInMb, appenderName, encoder);
         return logger;
     }
 
-    public static void configLogger(Logger logger, String logLevel, String directory, String fileName, int maxHistory, int maxFileSize) {
+    public static void configLogger(Logger logger, String level, String logFilePath, String logFilePathPattern, int maxHistory, int maxFileSizeInMb, String appenderName, Encoder<ILoggingEvent> encoder) {
         ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
         if(logger instanceof ch.qos.logback.classic.Logger && loggerFactory instanceof LoggerContext) {
             ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger)logger;
-            logbackLogger.setLevel(Level.toLevel(logLevel));
+            LoggerContext loggerContext = (LoggerContext)loggerFactory;
+            logbackLogger.setLevel(Level.toLevel(level));
             logbackLogger.setAdditive(false);
-            String appenderName = getMimLoggerAppender(logger.getName());
             RollingFileAppender<ILoggingEvent> appender = (RollingFileAppender<ILoggingEvent>)logbackLogger.getAppender(appenderName);
             if(appender == null) {
-                logbackLogger.addAppender(buildRollingFileBasedTimeAppender((LoggerContext)loggerFactory, appenderName, parseValue(logbackLogger.getLoggerContext(), directory), fileName, maxHistory, maxFileSize));
+                logbackLogger.addAppender(createRollingFileBasedTimeAppender(loggerContext, appenderName, logFilePath, logFilePathPattern, maxHistory, maxFileSizeInMb, encoder));
             }
         } else {
-            LOGGER.warn("不支持配置的日志类型: {}", logger.getClass().getName());
+            throw new UnsupportedLogContextException(loggerFactory.getClass().getName());
         }
     }
 
-//    private static void addFileAppenderLogger(String directory, String fileName, int maxHistory, int maxFileSize) {
-//        LoggerContext loggerContext = (LoggerContext)LoggerFactory.getILoggerFactory();
-//        Logger root = (Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-//        root.addAppender(buildRollingFileBasedTimeAppender(loggerContext, directory, fileName, maxHistory, maxFileSize));
-//    }
-
-    private static RollingFileAppender<ILoggingEvent> buildRollingFileBasedTimeAppender(LoggerContext loggerContext, String appenderName, String directory, String fileName, int maxHistory, int maxFileSize) {
+    private static RollingFileAppender<ILoggingEvent> createRollingFileBasedTimeAppender(LoggerContext context, String appenderName, String logFilePath, String logFilePathPattern, int maxHistory, int maxFileSizeInMb, Encoder<ILoggingEvent> encoder) {
         RollingFileAppender<ILoggingEvent> appender = new RollingFileAppender<>();
         appender.setName(appenderName);
-        appender.setContext(loggerContext);
-        appender.setFile(appendFilePath(directory, fileName + LOG_FILE_EXTENSION_NAME));
+        appender.setContext(context);
+        appender.setFile(parseValue(context, logFilePath));
 
         //rolling policy
         SizeAndTimeBasedRollingPolicy<ILoggingEvent> rollingPolicy = new SizeAndTimeBasedRollingPolicy<>();
-        rollingPolicy.setContext(loggerContext);
+        rollingPolicy.setContext(context);
         rollingPolicy.setParent(appender);
-        rollingPolicy.setFileNamePattern(appendFilePath(directory, fileName + ".%d{yyyy-MM-dd}.%i" + LOG_FILE_EXTENSION_NAME));
+        rollingPolicy.setFileNamePattern(parseValue(context, logFilePathPattern));
         rollingPolicy.setMaxHistory(maxHistory);
-        rollingPolicy.setMaxFileSize(new FileSize(maxFileSize * KB_COEFFICIENT));
+        rollingPolicy.setMaxFileSize(new FileSize(maxFileSizeInMb * MB_COEFFICIENT));
         rollingPolicy.start();
         appender.setRollingPolicy(rollingPolicy);
 
-        MimLogLayout mimLogLayout = new MimLogLayout();
-        mimLogLayout.setContext(loggerContext);
-        mimLogLayout.start();
-        appender.setLayout(mimLogLayout);
+        encoder.setContext(context);
+        encoder.start();
+        appender.setEncoder(encoder);
         appender.start();
         return appender;
     }
@@ -98,15 +87,9 @@ public class LogbackUtil {
         return interpretationContext.subst(value);
     }
 
-    private static String getMimLoggerAppender(String loggerName) {
-        return loggerName + "-appender";
-    }
-
-    private static String appendFilePath(String original, String append) {
-        if(original.endsWith(File.separator)) {
-            return original + append;
-        } else {
-            return original + File.separator + append;
+    public static class UnsupportedLogContextException extends RuntimeException {
+        public UnsupportedLogContextException(String message) {
+            super(message);
         }
     }
 }
