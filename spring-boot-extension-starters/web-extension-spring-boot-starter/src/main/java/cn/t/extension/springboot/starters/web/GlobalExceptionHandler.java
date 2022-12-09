@@ -14,11 +14,15 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Comparator;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -27,9 +31,29 @@ public class GlobalExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    private final List<ErrorHandler> errorHandlerList;
 
+    public GlobalExceptionHandler(List<ErrorHandler> errorHandlerList) {
+        this.errorHandlerList = errorHandlerList;
+        if(errorHandlerList != null) {
+            errorHandlerList.sort(Comparator.comparingInt(ErrorHandler::getOrder));
+        }
+    }
+
+    /**
+     * 400
+     * */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResultVo messageNotReadable(HttpMessageNotReadableException e, HttpServletRequest request) {
+        logger.error("cat a HttpMessageNotReadableException: " + request.getRequestURI(), e);
+        return ResultVo.buildFail(ErrorInfoEnum.BAD_PARAM.errorInfo);
+    }
+
+    /**
+     * 400
+     * */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResultVo methodArgumentNotValid(MethodArgumentNotValidException e, HttpServletRequest request) {
+    public ResultVo methodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
         BindingResult bindingResult = e.getBindingResult();
         TreeMap<String, String> fieldErrorMap = buildErrorField(bindingResult);
         ResultVo vo;
@@ -42,12 +66,24 @@ public class GlobalExceptionHandler {
         return vo;
     }
 
+    /**
+     * 400
+     * */
     @ExceptionHandler(BindException.class)
-    public ResultVo methodArgumentNotValid(BindException e, HttpServletRequest request) {
+    public ResultVo bindException(BindException e, HttpServletRequest request) {
         BindingResult bindingResult = e.getBindingResult();
         ResultVo vo = ResultVo.buildFail(ErrorInfoEnum.BAD_PARAM.errorInfo, buildErrorField(bindingResult));
         logger.warn("cat a BindException, uri: "+ request.getRequestURI() +", {}", vo);
         return vo;
+    }
+
+    /**
+     * 400
+     * */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResultVo missingServletRequestParameterException(MissingServletRequestParameterException e) {
+        String paramName = e.getParameterName();
+        return ResultVo.buildFail(ErrorInfoEnum.BAD_PARAM.errorInfo, paramName);
     }
 
     private TreeMap<String, String> buildErrorField(BindingResult bindingResult) {
@@ -61,52 +97,89 @@ public class GlobalExceptionHandler {
         return errorFieldMap;
     }
 
-    // 404
+    /**
+     * 404
+     */
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResultVo noHandlerFound(NoHandlerFoundException e, HttpServletRequest request) {
         logger.error("cat a NoHandlerFoundException: " + request.getRequestURI(), e);
         return ResultVo.buildFail(ErrorInfoEnum.SOURCE_NOT_FOUND.errorInfo);
     }
 
-    // 400
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResultVo messageNotReadable(HttpMessageNotReadableException e, HttpServletRequest request) {
-        logger.error("cat a HttpMessageNotReadableException: " + request.getRequestURI(), e);
-        return ResultVo.buildFail(ErrorInfoEnum.BAD_PARAM.errorInfo);
-    }
-
-    // 405
+    /**
+     * 405
+     * */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResultVo methodNotSupport(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
         logger.error("cat a HttpRequestMethodNotSupportedException: " + request.getRequestURI(), e);
         return ResultVo.buildFail(ErrorInfoEnum.METHOD_NOT_SUPPORT.errorInfo);
     }
 
-    // 415
+    /**
+     * 415
+     * */
     @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
     public ResultVo mediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException e, HttpServletRequest request) {
         logger.error("cat a HttpMediaTypeNotAcceptableException: " + request.getRequestURI(), e);
         return ResultVo.buildFail(ErrorInfoEnum.MEDIA_TYPE_NOT_SUPPORT.errorInfo);
     }
 
+    /**
+     * service exception
+     */
     @ExceptionHandler(ServiceException.class)
-    public ResultVo exception(ServiceException e, HttpServletRequest request) {
+    public ResultVo serviceException(ServiceException e, HttpServletRequest request) {
         if(!StringUtils.hasText(e.getCode())) {
             return ResultVo.buildFail();
         } else {
-            logger.warn("业务异常, uri: {}, code: {}, msg: {}, data: {}", request.getRequestURI(), e.getCode(), e.getMessage(), e.getData());
+            Throwable throwable = e.getCause();
+            if(throwable == null) {
+                logger.warn("业务异常, uri: {}, code: {}, msg: {}, data: {}", request.getRequestURI(), e.getCode(), e.getMessage(), e.getData());
+            } else {
+                logger.warn("业务异常, uri: {}, code: {}, msg: {}, data: {}, error: {}", request.getRequestURI(), e.getCode(), e.getMessage(), e.getData(), throwable.getMessage());
+            }
             if("employee_no_authority".equals(e.getCode())) {
-                return ResultVo.buildFail(e.getCode(), "无操作权限: " + e.getData());
+                if(e.getData() == null) {
+                    if(e.getMessage() == null) {
+                        return ResultVo.buildFail(e.getCode(), "无操作权限");
+                    } else {
+                        return ResultVo.buildFail(e.getCode(), e.getMessage());
+                    }
+                } else {
+                    return ResultVo.buildFail(e.getCode(), "无操作权限: " + e.getData());
+                }
             } else {
                 return ResultVo.buildFail(e.getCode(), e.getMessage(), e.getData());
             }
         }
     }
 
-    // 500
+    /**
+     * ResponseStatus exception
+     */
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResultVo responseStatusException(ResponseStatusException e, HttpServletRequest request, HttpServletResponse response) {
+        logger.error("cat a ResponseStatusException: " + request.getRequestURI(), e);
+        response.setStatus(e.getStatus().value());
+        return ResultVo.buildFail(String.valueOf(e.getStatus().value()), e.getReason());
+    }
+
+    /**
+     * 500
+     */
     @ExceptionHandler(Throwable.class)
-    public ResultVo exception(Throwable t, HttpServletRequest request) {
+    public ResultVo exception(Throwable t, HttpServletRequest request, HttpServletResponse response) {
         logger.error("catch a exception: " + request.getRequestURI(), t);
+        for (ErrorHandler errorHandler : errorHandlerList) {
+            try {
+                ResultVo resultVo = errorHandler.handle(t, request, response);
+                if(resultVo != null) {
+                    return resultVo;
+                }
+            } catch (Exception e) {
+                logger.error("ErrorHandler异常", e);
+            }
+        }
         return ResultVo.buildFail();
     }
 
