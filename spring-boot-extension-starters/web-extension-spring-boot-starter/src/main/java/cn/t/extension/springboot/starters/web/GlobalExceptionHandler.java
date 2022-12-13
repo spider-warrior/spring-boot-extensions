@@ -129,7 +129,7 @@ public class GlobalExceptionHandler {
      * 415
      * */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResultVo mediaTypeNotAcceptable(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
+    public ResultVo mediaTypeNotSupport(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
         logger.error("cat a HttpMediaTypeNotSupportedException: " + request.getRequestURI(), e);
         return ResultVo.buildFail(ErrorInfoEnum.MEDIA_TYPE_NOT_SUPPORT.errorInfo);
     }
