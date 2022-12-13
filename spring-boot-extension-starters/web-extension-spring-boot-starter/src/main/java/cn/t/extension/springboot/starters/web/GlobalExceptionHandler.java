@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -121,6 +122,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
     public ResultVo mediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException e, HttpServletRequest request) {
         logger.error("cat a HttpMediaTypeNotAcceptableException: " + request.getRequestURI(), e);
+        return ResultVo.buildFail(ErrorInfoEnum.MEDIA_TYPE_NOT_SUPPORT.errorInfo);
+    }
+
+    /**
+     * 415
+     * */
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResultVo mediaTypeNotAcceptable(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
+        logger.error("cat a HttpMediaTypeNotSupportedException: " + request.getRequestURI(), e);
         return ResultVo.buildFail(ErrorInfoEnum.MEDIA_TYPE_NOT_SUPPORT.errorInfo);
     }
 
