@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author <a href="mailto:yangjian@ifenxi.com">研发部-杨建</a>
+ * @author <a href="mailto:yangjian@liby.ltd">研发部-杨建</a>
  * @version V1.0
  * @since 2021-04-06 17:33
  **/
@@ -47,9 +47,11 @@ public class GlobalErrorController extends AbstractErrorController {
         return null;
     }
 
-    // 加载 /error文件夹下code资源
-    // 格式: /error/400.html, /error/500.html
-    // 如果找不到则加载: /error/4xx.html, /error/5xx.html
+    /**
+     * 加载 /error文件夹下code资源
+     * 格式: /error/400.html, /error/500.html
+     * 如果找不到则加载: /error/4xx.html, /error/5xx.html
+     */
     @RequestMapping(produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView errorHtml(HttpServletRequest request, HttpServletResponse response) {
         HttpStatus status = getStatus(request);
@@ -66,7 +68,7 @@ public class GlobalErrorController extends AbstractErrorController {
         if(infoEnum != null) {
             return ResultVo.buildFail(infoEnum.errorInfo);
         } else {
-            return ResultVo.buildFail(ErrorInfoEnum.SERVER_INTERNAL_ERROR.errorInfo);
+            return ResultVo.buildFail(ErrorInfoEnum.INTERNAL_SERVER_ERROR.errorInfo);
         }
     }
 

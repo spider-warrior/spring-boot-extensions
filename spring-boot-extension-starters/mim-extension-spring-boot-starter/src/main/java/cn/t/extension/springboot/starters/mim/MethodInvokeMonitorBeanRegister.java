@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * MethodInvokeMonitor bean register
  *
- * @author <a href="mailto:yangjian@ifenxi.com">研发部-杨建</a>
+ * @author <a href="mailto:yangjian@liby.ltd">研发部-杨建</a>
  * @version V1.0
  * @since 2020-11-03 16:23
  **/
@@ -87,7 +87,8 @@ public class MethodInvokeMonitorBeanRegister implements BeanDefinitionRegistryPo
         registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_SERVICE, methodInvokeMonitorSetting.getServiceConfig());
         registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_CONTROLLER, methodInvokeMonitorSetting.getControllerConfig());
         registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_RPC, methodInvokeMonitorSetting.getRpcConfig());
-        registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_HTTP, methodInvokeMonitorSetting.getHttpConfig());
+        registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_INVOKE_RPC, methodInvokeMonitorSetting.getInvokeRpcConfig());
+        registerMimMonitor(registry, MethodInvokeMonitorConstants.MIM_JOB, methodInvokeMonitorSetting.getJobConfig());
     }
 
     @Override

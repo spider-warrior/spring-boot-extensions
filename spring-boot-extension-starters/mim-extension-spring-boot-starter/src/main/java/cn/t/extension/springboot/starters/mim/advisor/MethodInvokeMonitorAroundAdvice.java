@@ -41,7 +41,7 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
     public Object invoke(MethodInvocation invocation) throws Throwable {
         Method method = invocation.getMethod();
         MonitorConfig monitorConfig = method.getAnnotation(MonitorConfig.class);
-        if ((monitorConfig != null && monitorConfig.ignore()) || (!aopLogger.isWarnEnabled())) {
+        if((monitorConfig != null && monitorConfig.ignore()) || (!aopLogger.isWarnEnabled())) {
             return invocation.proceed();
         } else {
             long start = System.currentTimeMillis();
@@ -70,12 +70,12 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
         }
     }
 
-    private void interceptorMethod(MethodInvocation invocation, MonitorConfig monitorConfig, Method method, Object result, Exception exception, long start) {
+    private void interceptorMethod(MethodInvocation invocation, MonitorConfig monitorConfig, Method method,  Object result, Exception exception, long start) {
         long end = System.currentTimeMillis();
         long rt = end - start;
         boolean inputPrint;
         boolean outputPrint;
-        if (monitorConfig == null) {
+        if(monitorConfig == null) {
             inputPrint = true;
             outputPrint = true;
         } else {
@@ -93,7 +93,7 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
         MDC.put(TraceConstants.TRACE_SUCCESS_NAME, String.valueOf(success));
         MDC.put(TraceConstants.TRACE_RT_NAME, String.valueOf(rt));
         long mt = System.currentTimeMillis() - start;
-        if (success) {
+        if(success) {
             aopLogger.info("mt={}, input={}, output={}", mt, inputString, buildOutputString(outputPrint, method.getReturnType(), result));
         } else {
             aopLogger.warn("mt={}, input={}, error={}", mt, inputString, buildExceptionString(exception));
@@ -109,11 +109,11 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
     }
 
     private String buildInputString(boolean inputPrint, Object[] arguments, Parameter[] parameters) {
-        if (!inputPrint) {
+        if(!inputPrint) {
             return "ignored";
         } else {
             Map<String, Object> inputMap = new HashMap<>();
-            for (int i = 0; i < parameters.length; i++) {
+            for(int i=0; i<parameters.length; i++) {
                 inputMap.put(parameters[i].getName(), arguments[i]);
             }
             return inputMap.toString();
@@ -121,16 +121,16 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
     }
 
     private String buildOutputString(boolean outputPrint, Class<?> type, Object result) {
-        if (!outputPrint) {
+        if(!outputPrint) {
             return "ignored";
         } else {
-            if (void.class.equals(type)) {
+            if(void.class.equals(type)) {
                 return "type: void";
             } else {
                 String resultJson = "serializeFailed";
                 try {
                     resultJson = JsonUtil.serialize(result);
-                } catch (Exception e) {
+                } catch (Exception e){
                     logger.error("", e);
                 }
                 return "type: " + type.getSimpleName() + ", result: " + resultJson;
@@ -139,7 +139,7 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
     }
 
     private String buildExceptionString(Exception e) {
-        if (e == null) {
+        if(e == null) {
             return "";
         }
         return e.getMessage();
@@ -168,7 +168,7 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
     }
 
     private static String appendFilePath(String original, String append) {
-        if (original.endsWith(File.separator)) {
+        if(original.endsWith(File.separator)) {
             return original + append;
         } else {
             return original + File.separator + append;
@@ -177,7 +177,7 @@ public class MethodInvokeMonitorAroundAdvice implements MethodInterceptor, Appli
 
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof ContextRefreshedEvent || event.getClass().getName().equals("org.springframework.cloud.context.environment.EnvironmentChangeEvent")) {
+        if(event instanceof ContextRefreshedEvent || event.getClass().getName().equals("org.springframework.cloud.context.environment.EnvironmentChangeEvent")) {
             logger.info("ApplicationEvent: {}, source: {}", event, event.getSource());
             LogbackUtil.configLogger(aopLogger, this.stereotypeConfig.getLogLevel(), getLogFilePath(), getLogFilePathPattern(), this.stereotypeConfig.getLogMaxHistory(), this.stereotypeConfig.getLogMaxFileSize(), getMimLoggerAppenderName(), mimLogEncoder);
         }/* else if(event instanceof RefreshScopeRefreshedEvent) {

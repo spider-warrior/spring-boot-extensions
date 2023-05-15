@@ -22,34 +22,22 @@ public class FeignTraceInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
-        Map<String, Collection<String>> headers = template.headers();
         //traceId
-        if(CollectionUtils.isEmpty(headers.get(TRACE_ID_HEADER_NAME))) {
-            String traceId = MDC.get(TRACE_ID_NAME);
-            if(!StringUtil.isEmpty(traceId)) {
-                template.header(TRACE_ID_HEADER_NAME, traceId);
-            }
-
-        }
+        configHeader(template, TRACE_ID_HEADER_NAME, TRACE_ID_NAME);
         //clientId
-        if(CollectionUtils.isEmpty(headers.get(TRACE_CLIENT_ID_HEADER_NAME))) {
-            String clientId = MDC.get(CLIENT_ID_NAME);
-            if(!StringUtil.isEmpty(clientId)) {
-                template.header(TRACE_CLIENT_ID_HEADER_NAME, clientId);
-            }
-        }
+        configHeader(template, TRACE_CLIENT_ID_HEADER_NAME, CLIENT_ID_NAME);
         //userId
-        if(CollectionUtils.isEmpty(headers.get(TRACE_USER_ID_HEADER_NAME))) {
-            String userId = MDC.get(USER_ID_NAME);
-            if(!StringUtil.isEmpty(userId)) {
-                template.header(TRACE_USER_ID_HEADER_NAME, userId);
-            }
-        }
+        configHeader(template, TRACE_USER_ID_HEADER_NAME, USER_ID_NAME);
+        //pSpanId
+        configHeader(template, TRACE_P_SPAN_ID_HEADER_NAME, P_SPAN_ID_NAME);
         //spanId
-        if(CollectionUtils.isEmpty(headers.get(TRACE_SPAN_ID_HEADER_NAME))) {
-            String spanId = MDC.get(SPAN_ID_NAME);
-            if(!StringUtil.isEmpty(spanId)) {
-                template.header(TRACE_SPAN_ID_HEADER_NAME, spanId);
+        configHeader(template, TRACE_SPAN_ID_HEADER_NAME, SPAN_ID_NAME);
+    }
+    private void configHeader(RequestTemplate template, String headerName, String logContextProperty) {
+        if(CollectionUtils.isEmpty(template.headers().get(headerName))) {
+            String value = MDC.get(logContextProperty);
+            if(!StringUtil.isEmpty(value)) {
+                template.header(headerName, value);
             }
         }
     }

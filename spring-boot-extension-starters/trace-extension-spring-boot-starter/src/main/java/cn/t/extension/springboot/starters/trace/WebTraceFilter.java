@@ -24,29 +24,26 @@ public class WebTraceFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws IOException, ServletException {
-        String traceId = request.getHeader(TRACE_ID_HEADER_NAME);
-        if(StringUtils.hasText(traceId)) {
-            MDC.put(TRACE_ID_NAME, traceId);
-        }
-        String clientId = request.getHeader(TRACE_CLIENT_ID_HEADER_NAME);
-        if(StringUtils.hasText(clientId)) {
-            MDC.put(CLIENT_ID_NAME, clientId);
-        }
-        String userId = request.getHeader(TRACE_USER_ID_HEADER_NAME);
-        if(StringUtils.hasText(clientId)) {
-            MDC.put(USER_ID_NAME, userId);
-        }
-        String spanId = request.getHeader(TRACE_SPAN_ID_HEADER_NAME);
-        if(StringUtils.hasText(spanId)) {
-            MDC.put(SPAN_ID_NAME, spanId);
-        }
+        configMdcProperty(request, TRACE_ID_HEADER_NAME, TRACE_ID_NAME);
+        configMdcProperty(request, TRACE_CLIENT_ID_HEADER_NAME, CLIENT_ID_NAME);
+        configMdcProperty(request, TRACE_USER_ID_HEADER_NAME, USER_ID_NAME);
+        configMdcProperty(request, TRACE_P_SPAN_ID_HEADER_NAME, P_SPAN_ID_NAME);
+        configMdcProperty(request, TRACE_SPAN_ID_HEADER_NAME, SPAN_ID_NAME);
         try {
             chain.doFilter(request, response);
         } finally {
             MDC.remove(TRACE_ID_NAME);
             MDC.remove(CLIENT_ID_NAME);
             MDC.remove(USER_ID_NAME);
+            MDC.remove(P_SPAN_ID_NAME);
             MDC.remove(SPAN_ID_NAME);
+        }
+    }
+
+    private void configMdcProperty(HttpServletRequest request, String header, String logContextProperty) {
+        String value = request.getHeader(header);
+        if(StringUtils.hasText(value)) {
+            MDC.put(logContextProperty, value);
         }
     }
 

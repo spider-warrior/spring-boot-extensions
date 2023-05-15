@@ -10,7 +10,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 /**
  * MethodInvokeMonitor setting
  *
- * @author <a href="mailto:yangjian@ifenxi.com">研发部-杨建</a>
+ * @author <a href="mailto:yangjian@liby.ltd">研发部-杨建</a>
  * @version V1.0
  * @since 2020-11-03 09:56
  **/
@@ -22,7 +22,12 @@ public class MethodInvokeMonitorSetting implements ApplicationListener<Environme
     private StereotypeConfig serviceConfig;
     private StereotypeConfig controllerConfig;
     private StereotypeConfig rpcConfig;
-    private StereotypeConfig httpConfig;
+    private StereotypeConfig invokeRpcConfig;
+    private StereotypeConfig jobConfig;
+
+    public ConfigurableEnvironment getEnvironment() {
+        return environment;
+    }
 
     public String getLogHome() {
         return logHome;
@@ -64,12 +69,20 @@ public class MethodInvokeMonitorSetting implements ApplicationListener<Environme
         this.rpcConfig = rpcConfig;
     }
 
-    public StereotypeConfig getHttpConfig() {
-        return httpConfig;
+    public StereotypeConfig getInvokeRpcConfig() {
+        return invokeRpcConfig;
     }
 
-    public void setHttpConfig(StereotypeConfig httpConfig) {
-        this.httpConfig = httpConfig;
+    public void setInvokeRpcConfig(StereotypeConfig invokeRpcConfig) {
+        this.invokeRpcConfig = invokeRpcConfig;
+    }
+
+    public StereotypeConfig getJobConfig() {
+        return jobConfig;
+    }
+
+    public void setJobConfig(StereotypeConfig jobConfig) {
+        this.jobConfig = jobConfig;
     }
 
     public MethodInvokeMonitorSetting(ConfigurableEnvironment environment) {
@@ -89,16 +102,15 @@ public class MethodInvokeMonitorSetting implements ApplicationListener<Environme
 
     @Override
     public String toString() {
-        return "MethodInvokeMonitorSettings{" +
-            "logHome='" + logHome + '\'' +
+        return "MethodInvokeMonitorSetting{" +
+            "environment=" + environment +
+            ", logHome='" + logHome + '\'' +
             ", daoConfig=" + daoConfig +
             ", serviceConfig=" + serviceConfig +
             ", controllerConfig=" + controllerConfig +
             ", rpcConfig=" + rpcConfig +
-            ", httpConfig=" + httpConfig +
+            ", invokeRpcConfig=" + invokeRpcConfig +
+            ", jobConfig=" + jobConfig +
             '}';
     }
-
-
-
 }

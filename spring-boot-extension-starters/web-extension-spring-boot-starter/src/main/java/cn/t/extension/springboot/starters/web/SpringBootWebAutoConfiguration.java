@@ -60,7 +60,7 @@ public class SpringBootWebAutoConfiguration {
 
     /* **************************************************** param validator ************************************************************/
     @Bean
-    public Validator validator() {
+    public Validator validator(){
         ValidatorFactory validatorFactory = Validation.byProvider(HibernateValidator.class)
             .configure()
             .failFast(springBootWebProperties.getFailFast())
@@ -116,4 +116,5 @@ public class SpringBootWebAutoConfiguration {
         this.springBootWebProperties = springBootWebProperties;
         this.serverProperties = serverProperties;
     }
+
 }
