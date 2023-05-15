@@ -23,9 +23,9 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Comparator;
-import java.util.List;
-import java.util.TreeMap;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -65,6 +65,23 @@ public class GlobalExceptionHandler {
         }
         logger.warn("cat a MethodArgumentNotValidException, uri: "+ request.getRequestURI() +", {}", vo);
         return vo;
+    }
+
+    /**
+     * 400
+     * */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResultVo constraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
+        Set<ConstraintViolation<?>> constraintViolationSet = e.getConstraintViolations();
+        String msg = null;
+        for (ConstraintViolation<?> constraintViolation : constraintViolationSet) {
+            msg = constraintViolation.getMessage();
+            if(StringUtils.hasText(msg)) {
+                break;
+            }
+        }
+        logger.error("cat a ConstraintViolationException: " + request.getRequestURI(), e);
+        return ResultVo.buildFail(ErrorInfoEnum.BAD_PARAM.errorInfo.getCode(), msg);
     }
 
     /**
