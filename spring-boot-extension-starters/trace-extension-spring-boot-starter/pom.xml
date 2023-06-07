@@ -5,13 +5,13 @@
     <parent>
         <groupId>cn.t</groupId>
         <artifactId>parent-lib-pom</artifactId>
-        <version>1.0.0.RELEASE</version>
+        <version>1.0.1.RELEASE</version>
         <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>trace-extension-spring-boot-starter</artifactId>
-    <version>1.0.4.RELEASE</version>
+    <version>1.0.5.RELEASE</version>
     <packaging>jar</packaging>
 
     <dependencies>
