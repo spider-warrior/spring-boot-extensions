@@ -12,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -23,9 +22,10 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import java.util.*;
+import java.io.IOException;
+import java.util.Comparator;
+import java.util.List;
+import java.util.TreeMap;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -65,23 +65,6 @@ public class GlobalExceptionHandler {
         }
         logger.warn("cat a MethodArgumentNotValidException, uri: "+ request.getRequestURI() +", {}", vo);
         return vo;
-    }
-
-    /**
-     * 400
-     * */
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResultVo constraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
-        Set<ConstraintViolation<?>> constraintViolationSet = e.getConstraintViolations();
-        String msg = null;
-        for (ConstraintViolation<?> constraintViolation : constraintViolationSet) {
-            msg = constraintViolation.getMessage();
-            if(StringUtils.hasText(msg)) {
-                break;
-            }
-        }
-        logger.error("cat a ConstraintViolationException: " + request.getRequestURI(), e);
-        return ResultVo.buildFail(ErrorInfoEnum.BAD_PARAM.errorInfo.getCode(), msg);
     }
 
     /**
@@ -143,15 +126,6 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 415
-     * */
-    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResultVo mediaTypeNotSupport(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
-        logger.error("cat a HttpMediaTypeNotSupportedException: " + request.getRequestURI(), e);
-        return ResultVo.buildFail(ErrorInfoEnum.MEDIA_TYPE_NOT_SUPPORT.errorInfo);
-    }
-
-    /**
      * service exception
      */
     @ExceptionHandler(ServiceException.class)
@@ -189,6 +163,11 @@ public class GlobalExceptionHandler {
         logger.error("cat a ResponseStatusException: " + request.getRequestURI(), e);
         response.setStatus(e.getStatus().value());
         return ResultVo.buildFail(String.valueOf(e.getStatus().value()), e.getReason());
+    }
+
+    @ExceptionHandler(IOException.class)
+    public void ioException(IOException e, HttpServletRequest request, HttpServletResponse response) {
+        logger.error("cat a IOException: " + request.getRequestURI() + ", contentType: " + response.getContentType(), e);
     }
 
     /**
